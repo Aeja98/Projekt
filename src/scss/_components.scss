@@ -1,0 +1,115 @@
+.logo {
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+
+.nav {
+    display: flex;
+    gap: 1rem;
+
+    a {
+        padding: 0.4rem 0.7rem;
+        border-radius: 999px;
+        transition: transform 0.2s ease, background-color 0.2s ease;
+    }
+    a:hover, a:focus-visible {
+        background: var(--border);
+        transform: translateY(-1px);
+    }
+}
+
+h1 {
+    font-size: clamp(2rem, 4vw, 3.6rem);
+    line-height: 1.1;
+    margin-bottom: 1rem;
+}
+
+.smallTxt {
+    margin: 0 0 0.5rem;
+    color: var(--accent-dark);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+}
+
+.infoTxt {
+    max-width: 60ch;
+    color: var(--muted);
+    margin-bottom: 0;
+}
+
+.card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+}
+
+.card-header {
+    margin-bottom: 1rem;
+}
+
+.card-header p {
+    color: var(--muted);
+    margin-bottom: 0;
+}
+
+#map {
+  min-height: 420px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.leaflet-container {
+  font-family: Arial, Helvetica, sans-serif;
+  background: var(--surface-2);
+}
+
+.results-content {min-height: 260px;}
+
+.loading-state {
+    display: grid;
+    place-items: center;
+    gap: 0.75rem;
+    text-align: center;
+    min-height: 220px;
+}
+
+.country-summary {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border-radius: var(--radius-md);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+}
+
+.country-summary img {
+    display: block;
+    margin-bottom: 0.75rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--border);
+}
+
+.breed-list {
+    display: grid;
+    gap: 1rem;
+}
+
+.breed-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+}
+
+.breed-card h4 {
+    margin-bottom: 0.35rem;
+}
+
+.breed-card p {
+    color: var(--muted);
+    margin-bottom: 0;
+}

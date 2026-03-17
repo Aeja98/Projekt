@@ -1,0 +1,57 @@
+// Light theme
+$light-bg: #f8f3eb;
+$light-surface: #fffaf4;
+$light-surface2: #f7efe4;
+$light-text: #33251c;
+$light-muted: #6f6258;
+$light-accent: #8b6f47;
+$light-darkAcc: #6f5736;
+$light-border: #dccbb6;
+
+
+// Dark theme
+$dark-bg: #1b1713;
+$dark-surface: #2a241f;
+$dark-surface2: #3a312a;
+$dark-text: #f5ede3;
+$dark-muted: #c7b8a8;
+$dark-accent: #c29a63;
+$dark-darkAcc: #a37c48;
+$dark-border: #5a4a3d;
+
+// Shared
+$shadow: 0 12px 30px rgba(51, 37, 28, 0.08);
+$radius-lg: 20px;
+$radius-md: 14px;
+$max-width: 1200px;
+$font-base: Arial, Helvetica, sans-serif;
+$bp-desktop: 900px;
+
+// Default theme
+:root {
+  --bg: #{$light-bg};
+  --surface: #{$light-surface};
+  --surface-2: #{$light-surface2};
+  --text: #{$light-text};
+  --muted: #{$light-muted};
+  --accent: #{$light-accent};
+  --accent-dark: #{$light-darkAcc};
+  --border: #{$light-border};
+
+  --shadow: #{$shadow};
+  --radius-lg: #{$radius-lg};
+  --radius-md: #{$radius-md};
+  --max-width: #{$max-width};
+}
+
+// Dark theme
+body.dark-theme {
+  --bg: #{$dark-bg};
+  --surface: #{$dark-surface};
+  --surface-2: #{$dark-surface2};
+  --text: #{$dark-text};
+  --muted: #{$dark-muted};
+  --accent: #{$dark-accent};
+  --accent-dark: #{$dark-darkAcc};
+  --border: #{$dark-border};
+}

@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="sv">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <title>Paws & Places</title>
+    <meta
+      name="description"
+      content="Explore dog breeds by country of origin."
+    />
+  </head>
+  <body>
+    <header class="header">
+      <div class="container header-inner">
+        <a class="logo" href="#">Paws & Places</a>
+
+        <nav class="nav" aria-label="Main navigation">
+          <a href="#">Home</a>
+          <a href="/docs/index.html" target="_blank" rel="noopener noreferrer">JSDoc</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="main">
+        <div class="container main-inner">
+          <div class="mainTxt">
+            <p class="smallTxt">Dog breeds + geography</p>
+            <h1>Discover dog breeds by country</h1>
+            <p class="infoTxt">
+              Click a country on the map to explore dog breeds that originate there.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="mapSec">
+        <div class="container mapGrid">
+          <article class="card map-card">
+            <div class="card-header">
+              <h2>Interactive map</h2>
+            </div>
+
+            <div id="map" aria-label="Interactive world map"></div>
+          </article>
+
+          <article class="card results-card">
+            <div class="card-header">
+              <h2>Breed results</h2>
+              <p id="results-subtitle">Choose a country to begin</p>
+            </div>
+
+            <div id="results-content" class="results-content">
+              <div class="empty-state">
+                <p>No country selected yet.</p>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container footer-inner">
+        <ul>
+            <li>DT211G Datateknik</li>
+            <li>Frontend-baserad webbutveckling</li>
+            <li>Angelica Adolfsson</li>
+        </ul>
+      </div>
+    </footer>
+
+    <script type="module" src="/src/js/main.js"></script>
+  </body>
+</html>
