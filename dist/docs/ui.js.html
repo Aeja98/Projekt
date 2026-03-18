@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: ui.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: ui.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Converts special characters into safe HTML text
+ *
+ * @param {string} value - Text to escape
+ * @returns {string} Escaped text
+ */
+function escapeHtml(value = '') {
+  return value
+    .replaceAll('&amp;', '&amp;amp;')
+    .replaceAll('&lt;', '&amp;lt;')
+    .replaceAll('>', '&amp;gt;')
+    .replaceAll('"', '&amp;quot;')
+    .replaceAll("'", '&amp;#039;');
+}
+
+/**
+ * Updates result while data loads
+ *
+ * @param {string} [countryLabel='selected country'] - Name of country being searched
+ * @returns {void}
+ */
+export function renderLoadingState(countryLabel = 'selected country') {
+  const subtitle = document.querySelector('#results-subtitle');
+  const resultsContent = document.querySelector('#results-content');
+
+  if (!subtitle || !resultsContent) return;
+
+  subtitle.textContent = `Searching ${countryLabel}...`;
+
+  resultsContent.innerHTML = `
+    &lt;div class="loading-state" aria-live="polite">
+      &lt;div class="paw-loader" aria-hidden="true">🐾&lt;/div>
+      &lt;p>Looking up breeds for ${escapeHtml(countryLabel)}...&lt;/p>
+    &lt;/div>
+  `;
+}
+
+/**
+ * Error handling - renders error message in the results section
+ *
+ * @param {string} message
+ * @returns {void}
+ */
+export function renderErrorState(message) {
+  const subtitle = document.querySelector('#results-subtitle');
+  const resultsContent = document.querySelector('#results-content');
+
+  if (!subtitle || !resultsContent) return;
+
+  subtitle.textContent = 'Something went wrong';
+
+  resultsContent.innerHTML = `
+    &lt;div class="empty-state" aria-live="polite">
+      &lt;p>${escapeHtml(message)}&lt;/p>
+    &lt;/div>
+  `;
+}
+
+/**
+ * Renders country info + matching breed results
+ *
+ * @param {object} country - Country data from REST countries
+ * @param {Array&lt;object>} breeds - Array of breeds
+ * @returns {void}
+ */
+export function renderBreedResults(country, breeds) {
+  const subtitle = document.querySelector('#results-subtitle');
+  const resultsContent = document.querySelector('#results-content');
+
+  if (!subtitle || !resultsContent) return;
+
+  const countryName = country.name?.common ?? 'Unknown country';
+  const regionText = [country.region, country.subregion].filter(Boolean).join(' • ');
+  const flagUrl = country.flags?.svg || country.flags?.png || '';
+  const flagAlt = country.flags?.alt || `Flag of ${countryName}`;
+
+  subtitle.textContent = `${breeds.length} breed(s) found for ${countryName}`;
+
+  if (breeds.length === 0) {
+    resultsContent.innerHTML = `
+      &lt;section class="country-summary">
+        ${flagUrl ? `&lt;img src="${flagUrl}" alt="${escapeHtml(flagAlt)}" width="80">` : ''}
+        &lt;h3>${escapeHtml(countryName)}&lt;/h3>
+        &lt;p>${escapeHtml(regionText)}&lt;/p>
+      &lt;/section>
+
+      &lt;div class="empty-state">
+        &lt;p>No dog breed origin data was found for this country in the current dataset.&lt;/p>
+      &lt;/div>
+    `;
+
+    return;
+  }
+
+  resultsContent.innerHTML = `
+    &lt;section class="country-summary">
+      ${flagUrl ? `&lt;img src="${flagUrl}" alt="${escapeHtml(flagAlt)}" width="80">` : ''}
+      &lt;h3>${escapeHtml(countryName)}&lt;/h3>
+      &lt;p>${escapeHtml(regionText)}&lt;/p>
+    &lt;/section>
+
+    &lt;section class="breed-list" aria-label="Dog breeds">
+      ${breeds
+        .map(
+          (breed) => `
+            &lt;article class="breed-card">
+              &lt;h4>${escapeHtml(breed.name ?? 'Unknown breed')}&lt;/h4>
+              &lt;p>${escapeHtml(breed.temperament ?? 'No temperament listed.')}&lt;/p>
+            &lt;/article>
+          `
+        )
+        .join('')}
+    &lt;/section>
+  `;
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#breedMatchesCountry">breedMatchesCountry</a></li><li><a href="global.html#escapeHtml">escapeHtml</a></li><li><a href="global.html#fetchCountryByCode">fetchCountryByCode</a></li><li><a href="global.html#fetchCountryByName">fetchCountryByName</a></li><li><a href="global.html#fetchDogBreeds">fetchDogBreeds</a></li><li><a href="global.html#fetchJson">fetchJson</a></li><li><a href="global.html#fetchWorldGeoJson">fetchWorldGeoJson</a></li><li><a href="global.html#getCountryAndBreeds">getCountryAndBreeds</a></li><li><a href="global.html#getCountryCode">getCountryCode</a></li><li><a href="global.html#getCountryName">getCountryName</a></li><li><a href="global.html#getDogApiKey">getDogApiKey</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#initMap">initMap</a></li><li><a href="global.html#loadCountryBreeds">loadCountryBreeds</a></li><li><a href="global.html#normalizeText">normalizeText</a></li><li><a href="global.html#renderBreedResults">renderBreedResults</a></li><li><a href="global.html#renderErrorState">renderErrorState</a></li><li><a href="global.html#renderLoadingState">renderLoadingState</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Wed Mar 18 2026 14:40:03 GMT+0100 (centraleuropeisk normaltid)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: api.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: api.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const REST_COUNTRIES_BASE_URL = 'https://restcountries.com/v3.1';
+const DOG_API_BASE_URL = 'https://api.thedogapi.com/v1';
+
+let breedCache = null;
+
+/**
+ * Normalizes a string so matching is easier
+ *
+ * @param {string} value - Text to normalize
+ * @returns {string} Normalized text
+ */
+function normalizeText(value = '') {
+  return value
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .trim();
+}
+
+/**
+ * Fetches JSON and throws an error if the request fails
+ *
+ * @async
+ * @param {string} url - URL to fetch
+ * @param {RequestInit} [options={}] - Fetch options
+ * @returns {Promise&lt;any>} Parsed JSON data
+ * @throws {Error} Throws if the request fails
+ */
+async function fetchJson(url, options = {}) {
+  const response = await fetch(url, options);
+
+  if (!response.ok) {
+    throw new Error(`Request failed: ${response.status} ${response.statusText}`);
+  }
+
+  return response.json();
+}
+
+/**
+ * Returns dog API key from env file
+ *
+ * @returns {string} API key
+ * @throws {Error} Throws if the key is missing
+ */
+function getDogApiKey() {
+  const apiKey = import.meta.env.VITE_DOG_API_KEY;
+
+  if (!apiKey) {
+    throw new Error(
+      'Missing Dog API key. Add VITE_DOG_API_KEY to your .env file in the project root.'
+    );
+  }
+
+  return apiKey;
+}
+
+/**
+ * Fetches country by country code
+ *
+ * @async
+ * @param {string} countryCode - Country code
+ * @returns {Promise&lt;object>} Country data object
+ */
+export async function fetchCountryByCode(countryCode) {
+  const url =
+    `${REST_COUNTRIES_BASE_URL}/alpha/${countryCode}` +
+    '?fields=name,flags,cca2,cca3,region,subregion';
+
+  const data = await fetchJson(url);
+
+  return Array.isArray(data) ? data[0] : data;
+}
+
+/**
+ * Fetches country by name
+ *
+ * @async
+ * @param {string} countryName - Country name
+ * @returns {Promise&lt;object>} Country data object
+ */
+export async function fetchCountryByName(countryName) {
+  const url =
+    `${REST_COUNTRIES_BASE_URL}/name/${encodeURIComponent(countryName)}` +
+    '?fields=name,flags,cca2,cca3,region,subregion';
+
+  const data = await fetchJson(url);
+
+  return Array.isArray(data) ? data[0] : data;
+}
+
+/**
+ * Fetches all dog breeds from dog API
+ * Caches result so app doesnt request list repeatedly
+ *
+ * @async
+ * @returns {Promise&lt;Array&lt;object>>} List of dog breeds
+ */
+export async function fetchDogBreeds() {
+  if (breedCache) {
+    return breedCache;
+  }
+
+  const apiKey = getDogApiKey();
+
+  const data = await fetchJson(`${DOG_API_BASE_URL}/breeds`, {
+    headers: {
+      'x-api-key': apiKey
+    }
+  });
+
+  breedCache = data;
+  return breedCache;
+}
+
+/**
+ * Checks to make sure breed matches selected country
+ *
+ * @param {object} breed - Breed object
+ * @param {object} country - Country object
+ * @returns {boolean} True if breed matches country
+ */
+function breedMatchesCountry(breed, country) {
+  const countryCode = normalizeText(country.cca2);
+  const countryName = normalizeText(country.name?.common);
+  const officialName = normalizeText(country.name?.official);
+
+  const breedCountryCode = normalizeText(breed.country_code);
+  const breedCountryCodes = normalizeText(breed.country_codes);
+  const breedOrigin = normalizeText(breed.origin);
+
+  const codeMatch =
+    breedCountryCode === countryCode ||
+    breedCountryCodes.includes(countryCode);
+
+  const nameMatch =
+    breedOrigin === countryName ||
+    breedOrigin.includes(countryName) ||
+    breedOrigin === officialName ||
+    breedOrigin.includes(officialName);
+
+  return codeMatch || nameMatch;
+}
+
+/**
+ * Gets country data and dog breeds that match
+ * Uses country name as a fallback in case country code is missing or invalid
+ *
+ * @async
+ * @param {string} countryCode - Country code
+ * @param {string} [countryName=''] - Country name fallback
+ * @returns {Promise&lt;{country: object, breeds: Array&lt;object>}>} Matched data
+ */
+export async function getCountryAndBreeds(countryCode, countryName = '') {
+  let country;
+
+  // Try country code first - then name - if both fail throw error
+  if (countryCode &amp;&amp; countryCode !== '-99') {
+    try {
+      country = await fetchCountryByCode(countryCode);
+    } catch (error) {
+      if (countryName) {
+        country = await fetchCountryByName(countryName);
+      } else {
+        throw error;
+      }
+    }
+  } else if (countryName) {
+    country = await fetchCountryByName(countryName);
+  } else {
+    throw new Error('No valid country code or country name was provided.');
+  }
+
+  const breeds = await fetchDogBreeds();
+
+  const matchingBreeds = breeds.filter((breed) =>
+    breedMatchesCountry(breed, country)
+  );
+
+  return {
+    country,
+    breeds: matchingBreeds
+  };
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#breedMatchesCountry">breedMatchesCountry</a></li><li><a href="global.html#escapeHtml">escapeHtml</a></li><li><a href="global.html#fetchCountryByCode">fetchCountryByCode</a></li><li><a href="global.html#fetchCountryByName">fetchCountryByName</a></li><li><a href="global.html#fetchDogBreeds">fetchDogBreeds</a></li><li><a href="global.html#fetchJson">fetchJson</a></li><li><a href="global.html#fetchWorldGeoJson">fetchWorldGeoJson</a></li><li><a href="global.html#getCountryAndBreeds">getCountryAndBreeds</a></li><li><a href="global.html#getCountryCode">getCountryCode</a></li><li><a href="global.html#getCountryName">getCountryName</a></li><li><a href="global.html#getDogApiKey">getDogApiKey</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#initMap">initMap</a></li><li><a href="global.html#loadCountryBreeds">loadCountryBreeds</a></li><li><a href="global.html#normalizeText">normalizeText</a></li><li><a href="global.html#renderBreedResults">renderBreedResults</a></li><li><a href="global.html#renderErrorState">renderErrorState</a></li><li><a href="global.html#renderLoadingState">renderLoadingState</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Wed Mar 18 2026 14:40:03 GMT+0100 (centraleuropeisk normaltid)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
