@@ -27,7 +27,7 @@ h1 {
 
 .smallTxt {
     margin: 0 0 0.5rem;
-    color: var(--accent-dark);
+    color: var(--accent);
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -99,7 +99,7 @@ h1 {
 }
 
 .breed-card {
-    background: #fff;
+    background: var(--surface-2);
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
     padding: 1rem;
